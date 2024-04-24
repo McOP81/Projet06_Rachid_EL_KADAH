@@ -37,9 +37,9 @@ public class Projet06RachidElKadahApplication implements CommandLineRunner {
 //                .score(56)
 //                .malade(false)
 //                .build();
-        patientRepository.save(new Patient(null,"Mohamed",new Date(),false,34));
+        patientRepository.save(new Patient(null,"Mohamed",new Date(),false,134));
         patientRepository.save(new Patient(null,"Hanane",new Date(),false,4321));
-        patientRepository.save(new Patient(null,"Imane",new Date(),true,34));
+        patientRepository.save(new Patient(null,"Imane",new Date(),true,134));
 
     }
 }

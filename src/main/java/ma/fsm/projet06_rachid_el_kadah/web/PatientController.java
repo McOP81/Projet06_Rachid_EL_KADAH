@@ -1,5 +1,6 @@
 package ma.fsm.projet06_rachid_el_kadah.web;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import ma.fsm.projet06_rachid_el_kadah.entities.Patient;
 import ma.fsm.projet06_rachid_el_kadah.repository.PatientRepository;
@@ -7,8 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -39,5 +43,32 @@ public class PatientController {
     @GetMapping("")
     public String home(){
         return "redirect:/index";
+    }
+    @GetMapping("/patients")
+    @ResponseBody
+    public List<Patient> listPatients(){
+        return patientRepository.findAll();
+    }
+    @GetMapping("/formPatients")
+    public String formPatients(Model model){
+        model.addAttribute("patient", new Patient());
+        return "formPatients";
+    }
+    @PostMapping("/save")
+    public String save(Model model,@Valid Patient patient, BindingResult bindingResult,
+                       @RequestParam(defaultValue = "") String keyword,
+                       @RequestParam(defaultValue = "0") int page){
+        if(bindingResult.hasErrors()) return"formPatients";
+        patientRepository.save(patient);
+        return "redirect:/index?page="+page+"&keyword="+keyword;
+    }
+    @GetMapping("/editPatient")
+    public String editPatient(@RequestParam(name = "id") Long id, Model model,String keyword, int page){
+        Patient patient = patientRepository.findById(id).orElse(null);
+        if(patient == null) throw new RuntimeException("Patient not found");
+        model.addAttribute("patient", patient);
+        model.addAttribute("keyword",keyword);
+        model.addAttribute("page",page);
+        return "editPatient";
     }
 }
